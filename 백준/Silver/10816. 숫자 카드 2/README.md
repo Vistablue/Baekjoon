@@ -28,3 +28,53 @@
 
  <p>첫째 줄에 입력으로 주어진 M개의 수에 대해서, 각 수가 적힌 숫자 카드를 상근이가 몇 개 가지고 있는지를 공백으로 구분해 출력한다.</p>
 
+### 풀이 
+초기에는 다음과 같이 리스트의 count() 함수를 사용하는 로직으로 작성했습니다.
+```python
+(기존 코드)
+N = int(input())
+A = list(map(int, input().split()))
+M = int(input())
+B = list(map(int, input().split()))
+answer = [0] * M
+
+for i in range(M):
+    c = A.count(B[i]) # 매번 리스트 싹훑어 (O(N))
+    answer[i] = c
+
+print(*answer)
+```
+이 방식대로라면 시간복잡도가 O(MN)이 되어 '시간초과'문제가 발생하였습니다.
+1920번처럼 해시테이블을 쓰는 set()을써서 해결하려했으나 set은 각 요소의 개수를 셀 수는 없기에 여기서 막혔었는데 ,
+ai의 도움을받아 dict를 쓰면된단 사실을 알았습니다.
+dict을써서 각 요소(숫자)별 카운트를 세놓고 그후 계산에 써먹는 방식으로 로직을 짰습니다.
+```python
+(수정한코드)
+N = int(input())
+A = list(map(int, input().split()))
+M = int(input())
+B = list(map(int, input().split()))
+
+# 딕셔너리로 A에 어떤 숫자가 몇 개 있는지 한 번 훑으며 기록
+counts = {}
+for i in A:
+    if i in counts:
+        counts[i] += 1
+    else:
+        counts[i] = 1
+
+r = []
+for j in B:
+    if j in counts:
+        r.append(counts[j])
+    else:
+        r.append(0)
+    
+print(*r)
+```
+dict은 set()과같이 해시테이블을응용하기에 O(1)이 걸립니다.전체로직에서 그럼 O(N+M)이 걸려 시간초과문제가 해결됩니다.
+
+### 배운점 
+set,dict 두 자료구조 모두 해시테이블을 기반으로하나 용도에는 큰 차이가 있다는 사실을 문제를 풀며 배웠슨비다.
+* set은 특정요소가 존재하는지 확인하기에 좋고
+* dict의 경우 특정요소관련 값을 함께 저장할때 사용하기에 좋단걸 , 10816번처럼 어떤요소가 몇개있는지 계산하기에 용이하단걸 배웠습니다.
